@@ -25,8 +25,13 @@ app.get("/", (req, res) => {
 
 app.use("/api/bookings", bookingRoutes);
 
-// Start server
+// Start server (only in non-production environment)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+// Export for Vercel serverless
+export default app;
