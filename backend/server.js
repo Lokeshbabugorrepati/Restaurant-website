@@ -16,12 +16,21 @@ app.use(async (req, res, next) => {
     await connectDB();
     next();
   } catch (error) {
-    res.status(500).json({ message: 'Database connection failed', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Database connection failed", error: error.message });
   }
 });
 
-// Middleware
-app.use(cors());
+// Middleware - Configure CORS for Vercel deployments
+app.use(
+  cors({
+    origin: true, // Allow all origins
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
