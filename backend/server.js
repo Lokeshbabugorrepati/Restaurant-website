@@ -10,15 +10,31 @@ dotenv.config();
 
 const app = express();
 
-// Connect to MongoDB on first request (for serverless)
-app.use(async (req, res, next) => {
+// Initialize MongoDB connection
+let dbInitialized = false;
+const initializeDB = async () => {
+  if (!dbInitialized) {
+    try {
+      await connectDB();
+      dbInitialized = true;
+    } catch (error) {
+      console.error('Failed to initialize MongoDB:', error);
+    }
+  }
+};
+
+// Connect to MongoDB on first API request
+app.use('/api', async (req, res, next) => {
   try {
-    await connectDB();
+    await initializeDB();
     next();
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Database connection failed", error: error.message });
+    console.error('Database middleware error:', error);
+    res.status(500).json({ 
+      message: "Database connection failed", 
+      error: error.message,
+      env: process.env.MONGODB_URI ? 'URI exists' : 'URI missing'
+    });
   }
 });
 
