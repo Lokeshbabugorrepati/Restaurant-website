@@ -8,10 +8,17 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
 const app = express();
+
+// Connect to MongoDB on first request (for serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Database connection failed', error: error.message });
+  }
+});
 
 // Middleware
 app.use(cors());
