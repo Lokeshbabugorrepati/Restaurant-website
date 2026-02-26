@@ -4,7 +4,7 @@ import Booking from "../models/Booking.js";
 export const createBooking = async (req, res) => {
   try {
     console.log("[CREATE BOOKING] Request received:", req.body);
-    
+
     const { name, email, phone, date, time, guests, specialRequests } =
       req.body;
 

@@ -11,13 +11,16 @@ const connectDB = async () => {
   try {
     console.log("[DB] Attempting to connect to MongoDB...");
     console.log("[DB] MongoDB URI exists:", !!process.env.MONGODB_URI);
-    
+
     if (!process.env.MONGODB_URI) {
       throw new Error("MONGODB_URI is not defined in environment variables");
     }
 
     // Log connection string format (without password)
-    const uriPreview = process.env.MONGODB_URI.replace(/\/\/([^:]+):([^@]+)@/, "//***:***@");
+    const uriPreview = process.env.MONGODB_URI.replace(
+      /\/\/([^:]+):([^@]+)@/,
+      "//***:***@",
+    );
     console.log("[DB] Connecting to:", uriPreview);
 
     const conn = await mongoose.connect(process.env.MONGODB_URI, {

@@ -54,19 +54,19 @@ app.use(async (req, res, next) => {
 // Routes
 app.get("/", (req, res) => {
   console.log("Root endpoint hit");
-  res.json({ 
+  res.json({
     message: "Welcome to Restaurant Booking API",
     mongoStatus: process.env.MONGODB_URI ? "URI configured" : "URI missing",
-    nodeEnv: process.env.NODE_ENV
+    nodeEnv: process.env.NODE_ENV,
   });
 });
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.json({ 
+  res.json({
     status: "ok",
     mongodb: process.env.MONGODB_URI ? "configured" : "not configured",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -79,7 +79,7 @@ app.use((err, req, res, next) => {
     success: false,
     message: "Server Error",
     error: err.message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 });
 
