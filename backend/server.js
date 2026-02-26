@@ -10,6 +10,18 @@ dotenv.config();
 
 const app = express();
 
+// Middleware - Configure CORS for Vercel deployments (MUST be before routes)
+app.use(
+  cors({
+    origin: true, // Allow all origins
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Initialize MongoDB connection
 let dbInitialized = false;
 const initializeDB = async () => {
@@ -17,6 +29,7 @@ const initializeDB = async () => {
     try {
       await connectDB();
       dbInitialized = true;
+      console.log("MongoDB initialized successfully");
     } catch (error) {
       console.error("Failed to initialize MongoDB:", error);
     }
@@ -24,7 +37,7 @@ const initializeDB = async () => {
 };
 
 // Connect to MongoDB on first API request
-app.use("/api", async (req, res, next) => {
+app.use(async (req, res, next) => {
   try {
     await initializeDB();
     next();
@@ -37,18 +50,6 @@ app.use("/api", async (req, res, next) => {
     });
   }
 });
-
-// Middleware - Configure CORS for Vercel deployments
-app.use(
-  cors({
-    origin: true, // Allow all origins
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.get("/", (req, res) => {
