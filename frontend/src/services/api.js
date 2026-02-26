@@ -1,11 +1,8 @@
 import axios from "axios";
 
-// Use relative path in production (same domain), absolute in development
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.MODE === "production"
-    ? "/api"
-    : "http://localhost:5000/api");
+// Use environment variable for API URL
+// In production, set VITE_API_URL to your backend Vercel URL
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const createBooking = async (bookingData) => {
   try {
