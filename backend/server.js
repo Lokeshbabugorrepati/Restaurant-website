@@ -53,10 +53,35 @@ app.use(async (req, res, next) => {
 
 // Routes
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Restaurant Booking API" });
+  console.log("Root endpoint hit");
+  res.json({ 
+    message: "Welcome to Restaurant Booking API",
+    mongoStatus: process.env.MONGODB_URI ? "URI configured" : "URI missing",
+    nodeEnv: process.env.NODE_ENV
+  });
+});
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ 
+    status: "ok",
+    mongodb: process.env.MONGODB_URI ? "configured" : "not configured",
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use("/api/bookings", bookingRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Global error handler:", err);
+  res.status(500).json({
+    success: false,
+    message: "Server Error",
+    error: err.message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined
+  });
+});
 
 // Start server (for local development only)
 const PORT = process.env.PORT || 5000;
